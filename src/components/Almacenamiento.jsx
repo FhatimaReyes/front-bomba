@@ -1,13 +1,15 @@
 import React from "react";
 import Portada from "./Portada";
 import './Almacenamiento.css'
-
+import Menu from '../menu/menubar.js'
 function Almacenamiento() {
     return (
         <div className="mainAlmacenamiento">
             <Portada
                 urlPortada='https://images.unsplash.com/photo-1509041172795-d4869fe4a9eb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1254&q=80'
             />
+            <Menu vista={2} /> 
+            
             <div className="contenidoAlmacenamiento">
                 <h1>Tinaco 1 <span>Almacenamiento</span></h1>
                 <div className="historialConsumo">
@@ -28,6 +30,7 @@ function Almacenamiento() {
                         <div>Nivel actual</div>
                         <div>2/3</div>
                     </div>
+
                     <div className="nivelGrafico">
                         <div className="nivel" id="nivel1"></div>
                         <div className="nivel" id="nivel2"></div>
@@ -63,7 +66,7 @@ function Almacenamiento() {
                     </table>
                 </div>
             </div>
-        </div>
+        </div>  
     );
 }
 
