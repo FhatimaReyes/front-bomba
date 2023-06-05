@@ -10,6 +10,7 @@ import '../App.css';
 const apiurl ="https://fastapi-juandavid1217.cloud.okteto.net/"//https://fastapi-juandavid1217.cloud.okteto.net/"
 
 function IsesioN(){
+    const response=null;
     const navigate = useNavigate();
     const[user, setUser] = useState('');
     const[password, setPassword] = useState('');
@@ -47,6 +48,7 @@ function IsesioN(){
                 }
             }
         }).catch(errors=>{
+            window.alert(errors.response.data['detail'])
         })
     }
 
@@ -66,6 +68,7 @@ function IsesioN(){
                 }
             }
         }).catch(errors=>{
+            window.alert(errors.response.data['detail'])
         })
     }
 

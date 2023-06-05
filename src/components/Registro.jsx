@@ -80,14 +80,17 @@ function Registro(){
                                 ).then(res=>{
                                     navigate('/Casa', {state: res.data})
                                 }).catch(errors=>{
+                                    window.alert(errors.response.data['detail'])
                                 })
                             }
                         }).catch(errors=>{
+                            window.alert(errors.response.data['detail'])
                         })
                     }
                 
             }
         }).catch(errors=>{
+            window.alert(errors.response.data['detail'])
         })
     }
 

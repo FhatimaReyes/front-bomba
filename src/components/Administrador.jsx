@@ -4,7 +4,9 @@ import Portada from './Portada.jsx';
 import Componente from './Componente.jsx'
 import { useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
+import Menu from '../menu/menubar.js'
 
+//const apiurl = "http://127.0.0.1:8000/"
 const apiurl = "https://fastapi-juandavid1217.cloud.okteto.net/"//"https://fastapi-juandavid1217.cloud.okteto.net/"
 
 function Administrador() {
@@ -39,6 +41,7 @@ function Administrador() {
             console.log("Respuesta de guardado (Grupo): "+res.status)
             getGroups(e, user, admin)
         }).catch(errors=>{
+            window.alert(errors.response.data['detail'])
         })
     }
 
@@ -52,8 +55,9 @@ function Administrador() {
         ).then(res=>{
             console.log(res.data)
             admin['grupos']=res.data;
-            navegar('/Admin', {state:admin});
+            navegar('/Admin', {state:admin, replace:true});
         }).catch(errors=>{
+            window.alert(errors.response.data['detail'])
         })
     }
     //console.log(info)
@@ -62,6 +66,7 @@ function Administrador() {
             <Portada
                 urlPortada='https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'
             />
+            <Menu vista={1} tipo={admin['id_usuario']}/>
             <div className="contenidoAdministrador">
                 <div className="gpoAdministrador">
                     <h1>Mis Grupos</h1>
@@ -74,7 +79,7 @@ function Administrador() {
                     <div className="gpoGrupos">
                         {admin['grupos'].map((alm, index)=>(
                             
-                            <div key={index}><Componente nombre={alm['nombre']} group_id={alm['id_grupo']} navegar={opcion}/></div>
+                            <div key={index}><Componente nombre={alm['nombre']} group_id={alm['id_grupo']} navegar={opcion} user={admin['id_usuario']}/></div>
                             
                         ))}
                         {/*<button className="nuevaSucursal">
