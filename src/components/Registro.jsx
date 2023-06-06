@@ -1,10 +1,12 @@
 import axios from "axios";
-import React, {useState} from "react";
+import React, { Component, useState } from "react";
 import '../components/Isesion.css';
+import Administrador from '../components/Administrador.jsx';
 import '../App.css';
 import { useNavigate } from "react-router-dom";
 
 
+//const apiurl = "http://127.0.0.1:8000/"
 const apiurl ="https://fastapi-juandavid1217.cloud.okteto.net/"//https://fastapi-juandavid1217.cloud.okteto.net/"
 function Registrarse(e, usuario, upassword){
     e.preventDefault();
@@ -28,20 +30,20 @@ function Registro(){
     const [status, setStatus]=useState(0);
 
     const handleChange=(event)=> {
-        setTipo({tipo: event.target.value});
+        setTipo(event.target.value);
         console.log(event.target.value);
     }
 
     const ChangeUser=(event)=> {
-        setUser({user: event.target.value});
+        setUser(event.target.value);
     }
 
     const ChangePassword=(event)=> {
-        setPassword({password: event.target.value});
+        setPassword(event.target.value);
     }
 
     const ChangeConfirmp=(event)=> {
-        setConfirmp({confirmp: event.target.value});
+        setConfirmp(event.target.value);
     }
 
     const Registro=(event, user, upassword, utipo)=>{
@@ -57,7 +59,7 @@ function Registro(){
         }
         ).then(res=>{
             if (res.status==200){
-                setStatus({status: 1})
+                setStatus(1)
                 const info=res.data;
                     if(utipo==1){
                         navigate('/Admin', {state: info});
@@ -111,7 +113,7 @@ function Registro(){
                             <option value='2' >Casa</option>
                         </select>
                     </form>
-                    <button onClick={(e)=>{if(password['password']==confirmp['confirmp']){Registro(e, user['user'], password['password'], tipo['tipo'])}else{console.log('Las contraseñas no son iguales')}}}>Registrarse</button>
+                    <button onClick={(e)=>{if(password==confirmp){Registro(e, user, password, tipo)}else{console.log('Las contraseñas no son iguales')}}}>Registrarse</button>
                     {/*this.state.status==1?(this.state.tipo==1?(<Navigate to={"/Admin"}></Navigate>):(<Navigate to={"/Casa"}></Navigate>)):(console.log("User not found"))*/}
                 </div>
             

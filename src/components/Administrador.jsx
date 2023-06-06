@@ -19,7 +19,7 @@ function Administrador() {
 
     const ChangeNombre=(e)=>{
         e.preventDefault();
-        setNombre({nombre:e.target.value});
+        setNombre(e.target.value);
     }
 
     const createGroup=(e, user, nombreg, admin)=>{
@@ -66,7 +66,7 @@ function Administrador() {
             <Portada
                 urlPortada='https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'
             />
-            <Menu vista={1} tipo={admin['id_usuario']}/>
+            <Menu vista={1} tipo={admin['id_tipo']}/>
             <div className="contenidoAdministrador">
                 <div className="gpoAdministrador">
                     <h1>Mis Grupos</h1>
@@ -110,7 +110,7 @@ function Administrador() {
                         <input type="text" onChange={(e)=>{ChangeNombre(e)}}/>
                     </form>
                     <div className="botonesAlta">
-                        <button onClick={(e)=>{createGroup(e, admin['id_usuario'], nombre['nombre'], admin)}} disabled={admin['grupos'].length>=5?(true):(false)}>Crear</button>
+                        <button onClick={(e)=>{createGroup(e, admin['id_usuario'], nombre, admin)}} disabled={admin['grupos'].length>=5?(true):(false)}>Crear</button>
                     </div>
                 </div>):(<></>)}
             </div>
