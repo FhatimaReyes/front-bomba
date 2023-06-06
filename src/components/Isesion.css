@@ -40,7 +40,7 @@ button{
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    display: none;
+    display: " ";
 
 }
 .registrarse-item h2,
