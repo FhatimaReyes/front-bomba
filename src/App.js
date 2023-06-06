@@ -1,20 +1,11 @@
 import './App.css';
-import Isesion from './components/Isesion.jsx';
-import Administrador from './components/Administrador.jsx';
-import Sucursal from './components/Sucursal.jsx';
-import Casa from './components/Casa.jsx'
-import Almacenamiento from './components/Almacenamiento';
+
+import { MyRoutes } from './routers/routes.jsx';
 
 function App() {
   return (
-    <div className="App">
-       <Isesion /> 
-       <Administrador /> 
-       <Sucursal /> 
-       <Casa /> 
-      <Almacenamiento />
-    </div>
-  );
+    <MyRoutes />
+  )
 }
 
 export default App;
