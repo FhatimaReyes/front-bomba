@@ -2,9 +2,8 @@
 import {Link, Navigate, useNavigate, Routes, Route, BrowserRouter} from "react-router-dom"
 import axios from "axios";
 import React, { Component, useState } from "react";
-import '../components/Isesion.css';
-import Administrador from '../components/Administrador.jsx';
-import Casa from '../components/Casa.jsx';
+import './styles/Isesion.css';
+import { validarUserIniSesion, validarPasswordIniSesion } from "./validations";
 import '../App.css';
 
 //const apiurl = "http://127.0.0.1:8000/"
@@ -29,44 +28,55 @@ function IsesioN(){
     }
 
     const iniSesion=(event, user, password)=>{
-        console.log(user)
-        axios(
-        {
-            method: 'GET',
-            url: apiurl+"General-Users/"+user+"/"+password,
-        }
-        ).then(res=>{
-            if (res.status==200){
-                setTipo(res.data['id_tipo']);
-                setStatus(1);
-                const info=res.data;
-                if(info['id_tipo']==1){
-                    navigate('/Admin', {state:info});
-                }else{
-                    navigate('/Casa', {state:info})
-                }
+          //console.log(user)
+          var pase1=validarUserIniSesion(user)
+          var pase2=validarPasswordIniSesion(password)
+          if(pase1['usuario']!=null && pase2['password']!=null){
+              axios(
+              {
+                  method: 'GET',
+                  url: apiurl+"General-Users/"+user+"/"+pase2['password'],
             }
-        }).catch(errors=>{
-            window.alert(errors.response.data['detail'])
-        })
+            ).then(res=>{
+                if (res.status==200){
+                    setTipo(res.data['id_tipo']);
+                    setStatus(1);
+                    const info=res.data;
+                    if(info['id_tipo']==1){
+                        navigate('/Admin', {state:info});
+                    }else{
+                        navigate('/Casa', {state:info})
+                    }
+                }
+            }).catch(errors=>{
+                window.alert(errors.response.data['detail'])
+            })
+        }else{
+            window.alert(pase1['mensaje']+" "+pase2['mensaje'])
+        }
     }
 
     const iniVin=(event, user, password)=>{
-        
-        axios(
-        {
-            method: 'GET',
-            url: apiurl+"Empleado/"+user+"/"+password,
-        }
-        ).then(res=>{
-            if (res.status==200){
-                setStatus(2)
-                const info=res.data;
-                    navigate('/Empleado', {state:info});
+        var pase1=validarUserIniSesion(user)
+        var pase2=validarPasswordIniSesion(password)
+        if(pase1['usuario']!=null && pase2['password']!=null){
+            axios(
+            {
+                method: 'GET',
+                url: apiurl+"Empleado/"+user+"/"+password,
             }
-        }).catch(errors=>{
-            window.alert(errors.response.data['detail'])
-        })
+            ).then(res=>{
+                if (res.status==200){
+                    setStatus(2)
+                    const info=res.data;
+                    navigate('/Empleado', {state:info});
+                }
+            }).catch(errors=>{
+                window.alert(errors.response.data['detail'])
+            })
+        }else{
+            window.alert(pase1['mensaje']+" "+pase2['mensaje'])
+        }
     }
 
     return (
