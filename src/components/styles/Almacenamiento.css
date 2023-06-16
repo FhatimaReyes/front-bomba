@@ -98,18 +98,19 @@ tr{
 tr.num1{
     background-color: #001919;
 }
-
 .barra {
     width: 100%;
     height: 20px;
     background-color: #f2f2f2;
   }
-
+  
   .relleno {
     height: 100%;
     background-color: #00b894;
     transition: width 0.3s ease-in-out;
   }
+
+
 
   .foquitoBomba {
     width: 30px;
@@ -165,3 +166,5 @@ tr.num1{
     align-items: center;
     text-align: center;
   }
+
+  

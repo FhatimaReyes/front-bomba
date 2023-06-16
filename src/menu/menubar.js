@@ -2,7 +2,7 @@ import './style.css';
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import axios from "axios";
-import { validarUserRegister, validarPasswordRegister } from '../components/validations';
+import { validarUserRegister, validarPasswordRegister } from '../components/Validations';
 
 
 const apiurl = "https://fastapi-juandavid1217.cloud.okteto.net/";

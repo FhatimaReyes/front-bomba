@@ -2,8 +2,8 @@
 import {Link, Navigate, useNavigate, Routes, Route, BrowserRouter} from "react-router-dom"
 import axios from "axios";
 import React, { Component, useState } from "react";
-import './styles/Isesion.css';
-import { validarUserIniSesion, validarPasswordIniSesion } from "./validations";
+import './styles/Isesion.css'
+import { validarUserIniSesion, validarPasswordIniSesion } from "./Validations";
 import '../App.css';
 
 //const apiurl = "http://127.0.0.1:8000/"

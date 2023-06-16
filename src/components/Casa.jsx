@@ -6,7 +6,7 @@ import'./styles/Casa.css';
 import { useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import Menu from '../menu/menubar.js'
-import { validarNombres, validarCantidad } from "./validations";
+import { validarNombres, validarCantidad } from "./Validations";
 
 //const apiurl = "http://127.0.0.1:8000/"
 const apiurl = "https://fastapi-juandavid1217.cloud.okteto.net/"
