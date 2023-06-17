@@ -1,5 +1,5 @@
 import React from "react";
-import './Componente.css';
+import './styles/Componente.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 //const apiurl = "http://127.0.0.1:8000/"
@@ -43,9 +43,22 @@ function Componente (props) {
             }
         ).then(res=>{
             if(res.status==200){
-                const info={'info':res.data,
-                      'user':user}
-                navigate('/almacenamientos', {state:info})
+                var alma=res.data;
+                axios(
+                    {
+                        method: 'GET',
+                        url: apiurl+"Administrador-Casa/Almacenamiento/IoT/"+alma['id_almacenamiento']
+                    }
+                ).then(res=>{
+                    if(res.status==200){
+                        const info={'info':alma,
+                                    'user':user,
+                                    'topico': res.data['dispo_IoT']}
+                        navigate('/almacenamientos', {state:info})
+                    }
+                }).catch(errors=>{
+                    window.alert(errors.response.data['detail'])
+                })
             }
         }).catch(errors=>{
             window.alert(errors.response.data['detail'])
