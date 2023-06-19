@@ -13,7 +13,7 @@ function Almacenamiento() {
     const dataAlma=data.state['info']
     const user=data.state['user']
     const topico=data.state['topico']
-    var [mensaje, setMensaje]=useState("")
+    var [mensaje]=useState("")
     var [porcentaje, setPorcentaje]=useState(0)
     var [boyas, setBoyas] = useState("")
     var [bomba, setBomba]=useState("")
@@ -22,23 +22,24 @@ function Almacenamiento() {
     var [totalE, setTotalE]=useState(0)
     var[totalS, setTotalS]=useState(0)
     var dataAnalisis="";
-    var fechaini="";
-    var fechafin="";
-    //var [bomba, setBomba]=useState(false)
+    var [fechaini, setFechaini]=useState("");
+    var [fechafin, setFechafin]=useState("");
     
+    function random() {
+        return Math.floor((Math.random() * (10 - 1 + 1)) + 10);
+    }
+
     const options = {
         clean: true, // retain session
     connectTimeout: 4000, // Timeout period
     // Authentication information
-    clientId: topico+user,
+    clientId: topico+random(),
     username: 'emqx_test',
     password: 'emqx_test',
     }
     
-    const connectUrl = 'http://localhost:8083/mqtt'
+    const connectUrl = 'http://b0a20eca.us-east-1.emqx.cloud:8083/mqtt'//'http://172.17.0.2:8083/mqtt'
     var client=null;
-    console.log("Estoy en el almacenaiento del user_id: "+user)
-    console.log("Estoy en el almacenaiento del grupo: "+dataAlma['id_grupo'])
     
     useEffect(() => {
         if (client==null) {
@@ -58,9 +59,7 @@ function Almacenamiento() {
         client.on('connect', function () {
             client.subscribe(topico+"/#", function (err) {
               if (err) {
-                //client.publish('presence', 'Hello mqtt')
                 console.log(err)
-                //console.log(topico)
               }
             })
           })
@@ -69,23 +68,19 @@ function Almacenamiento() {
             // message is Buffer
             var data=message.toString()
             data=JSON.parse(data)
-            if (topic==topico+"/boyas"){
+            if (topic===topico+"/boyas"){
                 setBoyas(data)
                 setPorcentaje((data.nivel/dataAlma['capacidad_maxima'])*100)
             }else{
-                if (topic==topico+"/bomba"){
+                if (topic===topico+"/bomba"){
                     setBomba(data)
                 }
             }
-            //console.log(data)
-            //setMensaje(data)
-            //setPorcentaje((data.nivel/dataAlma['capacidad_maxima'])*100)
-            //client.end()
         })
     }
 
     const desconectarMQTT=()=>{
-        if(client!=null){
+        if(client!==null){
             client.end()
             console.log("cliente desconectado")
             client=null;
@@ -94,51 +89,55 @@ function Almacenamiento() {
     const onoffBomba=(e)=>{
         e.preventDefault()
         var onoff=" ";
-        if(client==null){
+        if(client===null){
             client = mqtt.connect(connectUrl, options)
 
-            client.on('reconnect', (error) => {
-            })
-
-            
+            //client.on('reconnect', (error) => {
+            //})
         }
-        if(bomba.bomba==false){
+        if(bomba.bomba===false){
             onoff="prender"
+            console.log("Haz solicitado prender la bomba.")
         }else{
             onoff="apagar"
+            console.log("Haz solicitado apagar la bomba.")
         }
         client.publish(topico+"/action", `{"opcion":"${onoff}"}`)
     }
 
     const changeFechaini=(e)=>{
         e.preventDefault()
-        fechaini=e.target.value.toString()
-        console.log(fechaini)
+        setFechaini(e.target.value.toString())
+        //console.log(fechaini)
     }
     const changeFechafin=(e)=>{
         e.preventDefault()
-        fechafin=e.target.value.toString()
-        console.log(fechafin)
+        setFechafin(e.target.value.toString())
+        //console.log(fechafin)
     }
-    const analizar=(e)=>{
+    const analizar=(e, fechaIni, fechaFin)=>{
         e.preventDefault()
-        if(fechaini!=""&&fechafin!=""){
-            var diaini=parseInt(fechaini.substring(8,10))
-            var diafin=parseInt(fechafin.substring(8,10))
+        if(fechaIni!==""&&fechaFin!==""){
+            var diaini=parseInt(fechaIni.substring(8,10))
+            var diafin=parseInt(fechaFin.substring(8,10))
 
             if(diafin-diaini<=6){
                 axios(
                     {
                         method: 'GET',
-                        url: apiurl+"IoT/analisis/"+dataAlma['id_almacenamiento']+"/"+fechaini+"/"+fechafin
+                        url: apiurl+"IoT/analisis/"+dataAlma['id_almacenamiento']+"/"+fechaIni+"/"+fechaFin
                     }
                 ).then(res=>{
-                    if (res.status==200){
+                    if (res.status===200){
                         dataAnalisis=res.data
                         separar(e, dataAnalisis)
                     }
                 }).catch(errors=>{
-                    window.alert(errors.response.data['detail'])
+                    if(errors.message!=='Network Error'){
+                        window.alert(errors.response.data['detail'])
+                    }else{
+                        console.log("server shutdown")
+                    } 
                 })
             }else{
                 window.alert("El rango máximo de días permitidos es 7")
@@ -170,8 +169,7 @@ function Almacenamiento() {
                         <label htmlFor="fechaFin">Ficha de Fin</label>
                         <input type="date" id="fechaFin" onChange={(e)=>{changeFechafin(e)}}/>
                     </form>
-                    <button onClick={(e)=>{analizar(e)}}>Calcular</button>
-                    {/*console.log(dataAnalisis)*/}
+                    <button onClick={(e)=>{analizar(e, fechaini, fechafin)}}>Calcular</button>
                 </div>
                 <div className="estadoActual">
                     <h2>Estado Actual</h2>
@@ -180,7 +178,7 @@ function Almacenamiento() {
                         <p>{dataAlma['capacidad_maxima']} Lts</p>
                         <div>Nivel actual</div>
                         <div>{porcentaje.toFixed(2)} %</div>
-                        {user!=1?(
+                        {user!==1?(
                             <div>
                                 <button onClick={(e)=>{onoffBomba(e)}}>On/Off</button>
                             </div>   
@@ -190,60 +188,38 @@ function Almacenamiento() {
                         <div class="relleno" id="rellenoBarra" style={{"width":`${porcentaje}%`}}></div>
                     </div>
 
-                    {/*<div className="nivelGrafico">
-                        <div className="nivel" id="nivel1"></div>
-                        <div className="nivel" id="nivel2"></div>
-                        <div className="nivel" id="nivel3"></div>
-                    </div>*/}
+                    
                     <div className="estado">
                         <div class="acomodo">
                         <p class="texto">Estado Bomba:</p>
-                        <div class="foquitoBomba" id="foquito1" style={{"backgroundColor":`${bomba.bomba==true?("green"):("red")}`}}></div>
-                        <div class="texto">{mensaje.bomba==true?("Encendida"):("Apagada")}</div>
+                        <div class="foquitoBomba" id="foquito1" style={{"backgroundColor":`${bomba.bomba===true?("green"):("red")}`}}></div>
+                        <div class="texto">{mensaje.bomba===true?("Encendida"):("Apagada")}</div>
                         </div>
                         <div class="acomodo">
                         <p class="texto">Boya 1:</p>
-                        <div class="foquito1" id="foquito1" style={{"backgroundColor":`${boyas.boya1==true?("green"):("red")}`}}></div>
-                        <div class="texto">{boyas.boya1==true?("Activa"):("Desactivada")}</div>
+                        <div class="foquito1" id="foquito1" style={{"backgroundColor":`${boyas.boya1===true?("green"):("red")}`}}></div>
+                        <div class="texto">{boyas.boya1===true?("Activa"):("Desactivada")}</div>
                         </div>
                         <div class="acomodo">
                         <p class="texto">Boya 2:</p>
-                        <div class="foquito2" id="foquito1" style={{"backgroundColor":`${boyas.boya2==true?("green"):("red")}`}}></div>
-                        <div class="texto">{boyas.boya2==true?("Activa"):("Desactivada")}</div>
+                        <div class="foquito2" id="foquito1" style={{"backgroundColor":`${boyas.boya2===true?("green"):("red")}`}}></div>
+                        <div class="texto">{boyas.boya2===true?("Activa"):("Desactivada")}</div>
                         </div>
                         <div class="acomodo">
                         <p class="texto">Boya 3:</p>
-                        <div class="foquito3" id="foquito1" style={{"backgroundColor":`${boyas.boya3==true?("green"):("red")}`}}></div>
-                        <div class="texto">{boyas.boya3==true?("Activa"):("Desactivada")}</div>
+                        <div class="foquito3" id="foquito1" style={{"backgroundColor":`${boyas.boya3===true?("green"):("red")}`}}></div>
+                        <div class="texto">{boyas.boya3===true?("Activa"):("Desactivada")}</div>
                         </div >
                         <div class="acomodo">
                         <p class="texto">Boya Principal:</p>
-                        <div class="foquitoPrincipal" id="foquito1" style={{"backgroundColor":`${boyas.BP==true?("green"):("red")}`}}></div>
-                        <div class="texto">{boyas.BP==true?("Activa"):("Desactivada")}</div>
+                        <div class="foquitoPrincipal" id="foquito1" style={{"backgroundColor":`${boyas.BP===true?("green"):("red")}`}}></div>
+                        <div class="texto">{boyas.BP===true?("Activa"):("Desactivada")}</div>
                         </div>
                     </div>
                     
                 </div>
                 
-                {/*<div className="tablaConsumo">
-                    <table>
-                        <tr className="num1">
-                            <td>Fecha</td>
-                            <td>Hora</td>
-                            <td>Nivel</td>
-                        </tr>
-                        <tr className="">
-                            <td>21 de mayo</td>
-                            <td>14:52</td>
-                            <td>2/3</td>
-                        </tr>
-                        <tr className="num1">
-                            <td>21 de mayo</td>
-                            <td>14:10</td>
-                            <td>2/3</td>
-                        </tr>
-                    </table>
-                </div>*/}
+                
             </div>
             <div>
                     <Bars entradasBar={entradas} salidasBar={salidas} totalEBar={totalE} totalSBar={totalS}></Bars>

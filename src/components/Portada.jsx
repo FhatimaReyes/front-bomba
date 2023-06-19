@@ -6,5 +6,4 @@ function Portada (props) {
         <div className="imagenPortada" style={{ backgroundImage: `url('${props.urlPortada}')` }}></div>
     )
 }
-
 export default Portada;
